@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const resolvers = {
   Query: {
-    me: async (_, __, { user }) => {
+    me: async (_, __, { user, isAuthenticated }) => {
       // make sure user is logged in
 
       if (!user) {
@@ -22,7 +22,6 @@ const resolvers = {
   Mutation: {
     // Handle user signup
     async signup(_, { username, email, password }) {
-
       // (change this line according the db you use.)
       const user = await User.create({
         username,
@@ -31,9 +30,18 @@ const resolvers = {
       });
 
       // return json web token
-      return sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: "1y",
-      });
+      const token = sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1y",
+        }
+      );
+
+      return {
+        token,
+        user,
+      };
     },
 
     // Handles user login
@@ -52,9 +60,18 @@ const resolvers = {
       }
 
       // return json web token
-      return sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-      });
+      const token = sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+
+      return {
+        token,
+        user,
+      };
     },
   },
 };
