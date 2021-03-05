@@ -1,0 +1,1 @@
+There's simply no specific way to implement authentication with Auth0 and GraphQL. Simply create a SPA in the Auth0 dashboard and manage the authentication in the front-end!
